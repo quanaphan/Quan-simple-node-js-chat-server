@@ -126,7 +126,7 @@ io.on('connection', function(socket){
                 var key = find_key_from_id(socket.id);
                 users[key]['color'] = '#'+parts[1];
                 // success msg
-                socket.emit('system message', 'You have successfully changed your nickname colour to: #'+users[key]['color']);
+                socket.emit('system message', 'You have successfully changed your nickname colour to: '+users[key]['color']);
                 // emit identity
                 socket.emit('identity', JSON.stringify(users[key]));
                 // emit userlist? - TODO
