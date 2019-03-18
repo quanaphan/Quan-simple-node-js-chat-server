@@ -4,11 +4,8 @@
     "description": "Quan's chat server for educational purposes",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "",
+        "start": "node index.js",
+        "build": "webpack"
     },
     "author": "Quan Phan",
     "license": "ISC",
