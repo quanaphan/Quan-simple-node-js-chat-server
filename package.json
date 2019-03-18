@@ -1,17 +1,25 @@
 {
-    "name": "Quan-chat-server",
-    "version": "1.0.0",
-    "description": "Quan's chat server for educational purposes",
-    "main": "index.js",
-    "scripts": {
-        "start": "node index.js",
-        "build": "webpack"
-    },
-    "author": "Quan Phan",
-    "license": "ISC",
-    "dependencies": {
-        "cookie": "^0.3.1",
-        "express": "^4.16.4",
-        "socket.io": "^2.2.0"
-    },
+  "name": "quan-simple-node-js-chat-server",
+  "version": "1.0.0",
+  "description": "Quan's chat server for educational purposes",
+  "main": "index.js",
+  "dependencies": {
+    "cookie": "^0.3.1",
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quanaphan/Quan-simple-node-js-chat-server.git"
+  },
+  "author": "Quan Phan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quanaphan/Quan-simple-node-js-chat-server/issues"
+  },
+  "homepage": "https://github.com/quanaphan/Quan-simple-node-js-chat-server#readme"
 }
