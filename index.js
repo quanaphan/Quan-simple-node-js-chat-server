@@ -69,11 +69,11 @@ var compose_connection_msg = function(key,message){
 }
 var compose_name_change_msg = function(key, name){
     time = get_timestamp();
-    return '[' + time[0] + ':' + time[1] + '] ' + '<font color="'+users[key]['color']+'">'+ users[key]['name'] + '</font> has changed their name to <font color="' + users[key]['color'] + '">' + name;
+    return '[' + time[0] + ':' + time[1] + '] ' + '<font color="'+users[key]['color']+'">'+ users[key]['name'] + '</font> has changed their name to <font color="' + users[key]['color'] + '">' + name + '</font>';
 }
 var compose_color_change_msg = function(key, color){
     time = get_timestamp();
-    return '[' + time[0] + ':' + time[1] + '] ' + '<font color="'+users[key]['color']+'">'+ users[key]['name'] + '</font> has changed their color to <font color="#' + color + '">' + users[key]['name'];
+    return '[' + time[0] + ':' + time[1] + '] ' + '<font color="'+users[key]['color']+'">'+ users[key]['name'] + '</font> has changed their color to <font color="#' + color + '">' + users[key]['name'] + '</font>';
 }
 
 var chat_log = [];
