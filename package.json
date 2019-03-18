@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Quan's chat server for educational purposes",
     "dependencies": {
+        "cookie": "^0.3.1",
         "express": "^4.16.4",
         "socket.io": "^2.2.0"
     }

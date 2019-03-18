@@ -4,3 +4,4 @@
 # go to folder then do the following:
 # to install express (after node.js): npm install --save express@4.15.2
 # to install socket.io (after node.js): npm install --save socket.io
+# to install cookie lib(after node.js): npm install cookie

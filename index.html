@@ -2,22 +2,14 @@
 <html>
     <head>
         <title>Quan's Chat Server</title>
-        <!-- Styling -->
-        <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font: 13px Helvetica, Arial; }
-        form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-        form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-        #messages { list-style-type: none; margin: 0; padding: 0; }
-        #messages li { padding: 5px 10px; }
-        #messages li:nth-child(odd) { background: #eee; }
-        </style>
         <!-- Scripts -->
         <!-- socket.io -->
         <script src="/socket.io/socket.io.js"></script>
-        <!-- JQuery -->
+        <!-- JQuery & Bootstrap4 -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
         <!-- Client -->
         <script type="text/javascript">
             $(document).ready(function(){
@@ -28,42 +20,106 @@
                 // Receive identity
                 socket.on('identity', function(user){
                     identity =  JSON.parse(user);
-                    $('h1').html('You are <font color="'+identity['color']+'">'+identity['name']+'</font>');
+                    $('#Name-Display').html('You are <font color="'+identity['color']+'">'+identity['name']+'</font>');
+                    $('#chat-name').html('<font color="'+identity['color']+'">'+identity['name']+'</font>');
+                    var now = new Date();
+                    now.setTime(now.getTime() + (24*60*60*1000)); // valid for 1 day
+                    cookie_string = 'chat-name=' + identity['name'] +'; expires=' + now.toUTCString() + '; path=/';
+                    document.cookie = cookie_string;
+                    cookie_string = 'chat-color=' + identity['color'] +'; expires=' + now.toUTCString() + '; path=/';
+                    document.cookie = cookie_string;
+                    // debug
+                    //var savedcookie = document.cookie;
+                    //console.log(decodeURIComponent(oldcookie));
                 })
+
+
                 // Update User List
                 socket.on('Update User List', function(users){
                     userlist = JSON.parse(users);
-                    // TODO: implement username list
+                    $('#userlist').html('');
+                    for(i = 1; userlist[('User'+i)]; i++){
+                        var key = 'User'+i;
+                        if(userlist[key]['connected']){
+                            // ADD user to list if connected
+                            $('#userlist').append($('<li class="list-group-item" style="word-wrap: break-word;">').html('<font color="' + userlist[key]['color'] + '">' + userlist[key]['name'] + '</font>'))
+                        }
+                    }
 
                 })
+                // Receive chat log
+                socket.on('chat log', function(msg){
+                    $('#messages').html(msg);
+                })
                 // basic chat msg communication
-                $('form').submit(function(e){
-                    e.preventDefault();
-                    
-                    var cmd = /^\//g;
-                    var msg = $('#m').val();
-                    if(cmd.test(msg)){
-                        console.log("I'm here")
-                        socket.emit('command', msg);
+                $('#msg').on('keyup',function(e){
+                    if (e.keyCode == 13){
+                        var cmd = /^\//g;
+                        var msg = $('#msg').val();
+                        // debug
+                        console.log($('#msg').val());
+                        // check if command
+                        if(cmd.test(msg)){
+                            socket.emit('command', msg);
+                        }// not command
+                        else socket.emit('chat message', $('#msg').val());
+                        // reset value
+                        $('#msg').val('');
                     }
-                    else socket.emit('chat message','<font color="'+identity['color']+'">'+ identity['name'] + '</font>: ' + $('#m').val());
-                    $('#m').val('');
-                    return false;
+                    
                 })
                 socket.on('chat message', function(msg){
-                    $('#messages').append($('<li>').html(msg))
+                    $('#messages').append($('<li class="list-group-item" style="word-wrap: break-word;">').html(msg))
                 })
                 socket.on('system message', function(msg){
-                    $('#messages').append($('<li>').html('<font color="red">' + msg + '</font>'))
+                    $('#messages').append($('<li class="list-group-item" style="word-wrap: break-word;">').html('<font color="red">' + msg + '</font>'))
                 })
+
             })
         </script>
+        <!-- Styling -->
+        <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            height: 100vh;
+        }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li:nth-child(odd) { background: #eee; }
+        #content-row { height: calc(80% - 80px); }
+        </style>
     </head>
     <body>
-        <h1></h1>
-        <ul id="messages"></ul>
-        <form action="">
-            <input id="m" autocomplete="off" /><button>Send</button>
-        </form>
+        <div style="height: 100%; display: flex;">
+            <div class="container-fluid mw-100 mh-100">
+                <h1 class="display-4" id="Name-Display"></h1>
+                <div class="row">
+                    <div class="col-8">
+                        <h6>History</h6>
+                    </div>
+                    <div class="col-4">
+                        <h6>Users</h6>
+                    </div>
+                </div>
+                <div class="row" id="content-row">
+                    <div class="col-8" style="height: 100%">
+                        <ul id="messages" class="list-group overflow-auto mh-100 d-flex flex-column"></ul>
+                    </div>
+                    <div class="col-4" style="height:100%">
+                        <ul id="userlist" class="list-group overflow-auto mh-100 d-flex flex-column"></ul>
+                    </div>
+                </div>
+                <div class="row fixed-bottom mr-3 ml-3 mb-1">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="chat-name"></span> 
+                        </div>
+                        <input type="text" id="msg" class="form-control" placeholder="Enter to chat">
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
