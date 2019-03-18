@@ -126,16 +126,18 @@ io.on('connection', function(socket){
     socket.emit('chat log', compose_chat_log());
 
     // cookie
-    console.log("COOKIE: ")
-    console.log(socket.handshake.headers.cookie);
-    console.log(cookie.parse(socket.handshake.headers.cookie));
-    var socket_cookie = cookie.parse(socket.handshake.headers.cookie);
-    if(socket_cookie['chat-name']){
-        if(check_if_name_avail(socket_cookie['chat-name'])){
-            users[key]['name'] = socket_cookie['chat-name'];
-            socket.emit('system message', 'Welcome back, ' + users[key]['name'] + '.');
-        } else socket.emit('system message', 'Your old nickname is already in use, a new nickname had been assigned to you.');
-        users[key]['color'] = socket_cookie['chat-color'];
+    if(socket.handshake.headers.cookie){
+        var socket_cookie = cookie.parse(socket.handshake.headers.cookie);
+        console.log(cookie.parse(socket.handshake.headers.cookie));
+        if(socket_cookie){
+            if(socket_cookie['chat-name']){
+                if(check_if_name_avail(socket_cookie['chat-name'])){
+                    users[key]['name'] = socket_cookie['chat-name'];
+                    socket.emit('system message', 'Welcome back, ' + users[key]['name'] + '.');
+                } else socket.emit('system message', 'Your old nickname is already in use, a new nickname had been assigned to you.');
+                users[key]['color'] = socket_cookie['chat-color'];
+            }
+        }
     }
     console.log(key+' has connected');
     // tell the client of their identity
